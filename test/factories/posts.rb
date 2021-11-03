@@ -10,6 +10,6 @@ FactoryBot.define do
         true
       end
     }
-    user { nil }
+    user
   end
 end
