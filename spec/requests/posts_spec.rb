@@ -14,9 +14,9 @@ RSpec.describe 'Posts', type: :request do
   end
   describe 'with data in the DB' do
     let!(:posts) {create_list(:post, 10, published: true) }
-    before { get '/posts' }
+    
     it 'should return all the published posts' do 
-      
+      get '/posts'
       payload = JSON.parse(response.body)
       expect(payload.size).to eq(posts.size)
       expect(response).to have_http_status(200)
@@ -44,13 +44,13 @@ RSpec.describe 'Posts', type: :request do
           title: 'titulo',
           content: 'content',
           published: false,
-          user_id: user_id
+          user_id: user.id
         }
       }
-      post '/posts', params: req_payload
+      post "/posts", params: req_payload
       payload = JSON.parse(response.body)
       expect(payload).to_not be_empty
-      expect(payload['id']).to_not be_empty
+      expect(payload['id']).to_not be_nil
       expect(response).to have_http_status(:created)    
     end
 
@@ -59,7 +59,7 @@ RSpec.describe 'Posts', type: :request do
         post: {
           content: 'content',
           published: false,
-          user_id: user_id
+          user_id: user.id
         }
       }
       post '/posts', params: req_payload
@@ -70,7 +70,7 @@ RSpec.describe 'Posts', type: :request do
     end
   end
 
-  describe 'PUT /posts/{id}'  do
+  describe "PUT /posts/{id}"  do
     let!(:article) { create(:post) }
 
     it 'should create a post' do
@@ -81,7 +81,7 @@ RSpec.describe 'Posts', type: :request do
           published: true
         }
       }
-      put '/posts/#{article.id}', params: req_payload
+      put "/posts/#{article.id}", params: req_payload
       payload = JSON.parse(response.body)
       expect(payload).to_not be_empty
       expect(payload['id']).to eq(article.id)
@@ -96,7 +96,7 @@ RSpec.describe 'Posts', type: :request do
           published: false,
         }
       }
-      put '/posts/#{article.id}', params: req_payload
+      put "/posts/#{article.id}", params: req_payload
       payload = JSON.parse(response.body)
       expect(payload).to_not be_empty
       expect(payload['error']).to_not be_empty
