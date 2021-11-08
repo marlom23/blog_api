@@ -10,6 +10,9 @@ end
 
   def index
     @posts = Post.where(published: true)
+    if !params[:search].nil? && params[:search].present?
+      @posts = PostsSearchService.search(@posts, params[:search])
+    end
     render json: @posts, status: :ok 
   end
 
