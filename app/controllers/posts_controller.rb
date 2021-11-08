@@ -13,7 +13,7 @@ end
     if !params[:search].nil? && params[:search].present?
       @posts = PostsSearchService.search(@posts, params[:search])
     end
-    render json: @posts, status: :ok 
+    render json: @posts.includes(:user), status: :ok 
   end
 
   def show
