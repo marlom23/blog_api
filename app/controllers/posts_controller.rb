@@ -1,8 +1,14 @@
+
+
 class PostsController < ApplicationController
   before_action :authenticate_user!, only: [:create, :update]
 
-  rescue_from Exception  do |e|    
+  rescue_from Exception  do |e| 
     render json: {error: e.message}, status: :internal_error
+  end
+
+  rescue_from ActiveRecord::RecordNotFound do |e|
+    render json: {error: e.message}, status: :not_found 
   end
 
   rescue_from ActiveRecord::RecordInvalid do |e|
@@ -19,16 +25,20 @@ end
 
   def show
     @post = Post.find(params[:id])
-    render json: @post, status: :ok   
+    if(@post.published? || (Current.user && @post.user_id == Current.user.id))
+      render json: @post, status: :ok 
+    else
+      render json: {error: 'Not Found'}, status: :not_found
+    end 
   end
 
   def create
-    @post = Post.create!(create_params)
+    @post = Current.user.posts.create!(create_params)
     render json: @post, status: :created
   end
 
   def update
-    @post = Post.find(params[:id])
+    @post = Current.user.posts.find(params[:id])
     @post.update!(update_params)
     render json: @post, status: :ok
   end
@@ -36,7 +46,7 @@ end
   private
 
   def create_params
-    params.require(:post).permit(:title, :content, :published, :user_id)
+    params.require(:post).permit(:title, :content, :published)
   end
 
   def update_params
