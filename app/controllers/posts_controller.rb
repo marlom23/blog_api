@@ -1,6 +1,7 @@
 
 
 class PostsController < ApplicationController
+  include Secured
   before_action :authenticate_user!, only: [:create, :update]
 
   rescue_from Exception  do |e| 
