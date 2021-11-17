@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Blog - API</title>
+  </head>
+  <body>
+    <script src= "https:cdn.auth0.com/js/auth0/9.5.1/auth0.min.js"></script>
+    <script>
+     window.addEventListener('load', function(){
+
+        var webAuth = new auth0.WebAuth({
+          domain: 'dev-y9oyk0jn.us.auth0.com',
+          clientID: 'bFf63IJI29y8IbMcdDl4MpZnAL05fVUr',
+          responseType: 'token id_token',
+          scope: 'openid profile email',
+          redirectUri: 'http://jwt.io'
+        });
+
+        webAuth.authorize();
+      });
+    </script>
+  </body>
+</html>
+
+
